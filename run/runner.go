@@ -25,7 +25,7 @@ type Runner struct {
 	Debug       bool
 }
 
-const ruleAddr = "raw.githubusercontent.com/XTeam-Wing/gitlab-version/master/gitlab_hashes.json"
+const ruleAddr = "https://raw.githubusercontent.com/XTeam-Wing/gitlab-version/master/gitlab_hashes.json"
 
 func (r *Runner) Run() (err error) {
 	var wg sync.WaitGroup
