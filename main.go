@@ -4,12 +4,12 @@ import (
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/gologger/levels"
-	"gitlab-version/runner"
+	"gitlab-version/run"
 	"log"
 )
 
 func main() {
-	opt := &Runner.Runner{}
+	opt := &run.Runner{}
 	flagSet := goflags.NewFlagSet()
 	flagSet.SetDescription("Get Gitlab version number automatically")
 	flagSet.BoolVar(&opt.Silent, "silent", false, "show silent output")
