@@ -5,7 +5,7 @@
             "14.1.7",
             "14.1.8"
         ]
-    }}
+    },
     "0161d4123fea9edbf172": {
         "build": "gitlab-ce",
         "versions": [
