@@ -23,5 +23,8 @@ go run main.go -h
   go run main.go -i target.txt
   go run main.go -i https://target1.com,https://target2.com
 ```
+
+## 参考
+代码逻辑来自于https://github.com/righel/gitlab-version-nse
    ## 贡献
 欢迎贡献代码！
