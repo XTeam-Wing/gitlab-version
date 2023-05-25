@@ -41,26 +41,26 @@ func (r *Runner) Run() (err error) {
 		go func(url string) {
 			defer wg.Done()
 			body, err := r.GetBody(url)
+			<-threads
 			if err != nil {
 				gologger.Error().Msgf("get %s failed: %v", url, err)
 				return
 			}
 			build, result, err := r.Detect(body)
+			if err != nil {
+				gologger.Error().Msgf("detect %s failed: %v", url, err)
+				return
+			}
 			if len(result) == 0 {
-				gologger.Debug().Msgf("detect %s failed: %v", url, err)
+				gologger.Debug().Msgf("detect %s failed", url)
 				return
 			}
 			outputStr := fmt.Sprintf("target:%s version:%s build:%s", url, strings.Join(result, "||"), build)
 			gologger.Info().Msgf(outputStr)
 			results = append(results, outputStr)
 
-			if err != nil {
-				gologger.Error().Msgf("detect %s failed: %v", url, err)
-			}
-			<-threads
 		}(url)
 	}
-
 	wg.Wait()
 
 	if r.Output != "" {
@@ -107,14 +107,14 @@ func (r *Runner) GetBody(url string) (result string, err error) {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
-	gologger.Debug().Msgf("get %s", url)
-	resp, err := client.Get(fmt.Sprintf("%s%s", url, "/assets/webpack/manifest.json"))
-
-	defer resp.Body.Close()
+	urlStr := fmt.Sprintf("%s%s", url, "/assets/webpack/manifest.json")
+	gologger.Debug().Msgf("get %s", urlStr)
+	resp, err := client.Get(urlStr)
 	if err != nil {
 		gologger.Error().Msgf("get %s failed: %v", url, err)
 		return result, err
 	}
+	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		gologger.Error().Msgf("read body failed: %v", err)
