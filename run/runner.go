@@ -3,6 +3,7 @@ package run
 import (
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/gologger"
@@ -58,12 +59,11 @@ func (r *Runner) Run() (err error) {
 			outputStr := fmt.Sprintf("target:%s version:%s build:%s", url, strings.Join(result, "||"), build)
 			gologger.Info().Msgf(outputStr)
 			results = append(results, outputStr)
-
 		}(url)
 	}
 	wg.Wait()
 
-	if r.Output != "" {
+	if r.Output != "" && len(results) > 0 {
 		err := WriteFile(r.Output, []byte(strings.Join(results, "\n")), 0777)
 		if err != nil {
 			gologger.Error().Msgf("write file failed: %v", err)
@@ -115,6 +115,10 @@ func (r *Runner) GetBody(url string) (result string, err error) {
 		return result, err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		gologger.Error().Msgf("get %s status code failed: %v", url, resp.StatusCode)
+		return result, errors.New("status code error")
+	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		gologger.Error().Msgf("read body failed: %v", err)
