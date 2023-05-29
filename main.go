@@ -15,6 +15,7 @@ func main() {
 	flagSet.BoolVar(&opt.Silent, "silent", false, "show silent output")
 	flagSet.IntVar(&opt.Timeout, "timeout", 20, "timeout")
 	flagSet.IntVar(&opt.Concurrency, "concurrency", 100, "concurrency")
+	flagSet.StringVar(&opt.Rule, "rule", "", "hash json file")
 	flagSet.StringVar(&opt.Output, "output", "result.txt", "output file")
 	flagSet.BoolVar(&opt.ShowCVE, "show-cve", false, "show cve")
 	flagSet.BoolVar(&opt.Debug, "debug", false, "debug")

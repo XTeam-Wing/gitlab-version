@@ -22,6 +22,7 @@ type Runner struct {
 	Timeout     int
 	Data        map[string]Version
 	Output      string
+	Rule        string
 	Debug       bool
 }
 
@@ -73,6 +74,20 @@ func (r *Runner) Run() (err error) {
 }
 
 func (r *Runner) GetLatestHash() (err error) {
+	if r.Rule != "" {
+		data, err := os.ReadFile(r.Rule)
+		if err != nil {
+			gologger.Error().Msgf("read rule file failed: %v", err)
+			return err
+		}
+		err = json.Unmarshal(data, &r.Data)
+		if err != nil {
+			gologger.Error().Msgf("decode rule file failed: %v", err)
+			return err
+		}
+		return nil
+	}
+
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
